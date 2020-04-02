@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">mediaPick</string>
+
+    <string name="media_you_have_no_photos_and_videos">您还没有照片和视频</string>
+    <string name="media_duration_format_short">%2$d:%5$02d</string>
+    <string name="media_duration_format_long">%1$d:%3$02d:%5$02d</string>
+    <string name="media_max_send_images_or_videos_format">最多只能选择%d个图片/视频</string>
+    <string name="media_image_and_video">图片和视频</string>
+    <string name="media_image">图片</string>
+    <string name="media_video">视频</string>
+    <string name="media_info">详情</string>
+    <string name="media_send">发送</string>
+    <string name="media_send_select_format">发送(%d)</string>
+    <string name="media_send_select_of_all_format">发送(%d/%d)</string>
+    <string name="media_preview">预览</string>
+    <string name="media_preview_select_format">预览(%d)</string>
+    <string name="media_position_format">%d/%d</string>
+</resources>

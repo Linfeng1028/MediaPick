@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="media_white">#FFFFFFFF</color>
+    <color name="media_black">#FF000000</color>
+    <color name="media_preview_un_enable">#FFCDCDCD</color>
+    <color name="media_status_bar">#FF373C3D</color>
+</resources>
