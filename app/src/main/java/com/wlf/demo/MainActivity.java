@@ -8,7 +8,6 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.wlf.mediapick.LoadMediaUtils;
 import com.wlf.mediapick.MediaPicker;
 import com.wlf.mediapick.entity.MediaEntity;
 import com.wlf.mediapick.entity.MediaPickConstants;

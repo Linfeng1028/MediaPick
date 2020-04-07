@@ -8,7 +8,7 @@ import android.os.Parcelable;
  */
 public class MediaPickConfig implements Parcelable {
     /**
-     * 图片/视频可选择的最大数量，默认值为9
+     * 图片/视频可选择的最大数量，默认值为9；小于等于0时不限数量
      */
     public int maxPickNum;
 

@@ -55,11 +55,10 @@ public class MediaPickActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.media_activity_media_pick);
-        setStatusBarColor();
         initView();
         initRecyclerView();
-        loadLocalMedia();
         initListener();
+        MediaPickActivityPermissionsDispatcher.loadLocalMediaWithPermissionCheck(MediaPickActivity.this);
     }
 
     @Override
@@ -79,21 +78,13 @@ public class MediaPickActivity extends AppCompatActivity implements
         }
     }
 
-    /**
-     * 修改状态栏颜色
-     */
-    private void setStatusBarColor() {
-        Window window = getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(getColor(R.color.media_status_bar));
-    }
-
     private void initView() {
         mRecyclerView = findViewById(R.id.recycler_view);
         mConfirmTv = findViewById(R.id.tv_confirm);
         mPreviewTv = findViewById(R.id.tv_preview);
         TextView titleTv = findViewById(R.id.tv_title);
 
+        setStatusBarColor();
         if (mConfig.mediaType == MEDIA_TYPE_IMAGE_AND_VIDEO) {
             titleTv.setText(getString(R.string.media_image_and_video));
         } else if (mConfig.mediaType == MEDIA_TYPE_IMAGE) {
@@ -101,6 +92,15 @@ public class MediaPickActivity extends AppCompatActivity implements
         } else if (mConfig.mediaType == MEDIA_TYPE_VIDEO) {
             titleTv.setText(getString(R.string.media_video));
         }
+    }
+
+    /**
+     * 修改状态栏颜色
+     */
+    private void setStatusBarColor() {
+        Window window = getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(getColor(R.color.media_status_bar));
     }
 
     private void initRecyclerView() {
@@ -113,9 +113,17 @@ public class MediaPickActivity extends AppCompatActivity implements
         mRecyclerView.setAdapter(mMediaAdapter);
     }
 
-    private void loadLocalMedia() {
-        // TODO 可优化，放入数据库中
-        MediaPickActivityPermissionsDispatcher.startLoadWithPermissionCheck(MediaPickActivity.this);
+    @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE})
+    void loadLocalMedia() {
+        LoadMediaUtils.loadMediaFromSDCard(this, mConfig.mediaType, mediaEntityList ->
+                runOnUiThread(() -> {
+                    mMediaList.clear();
+                    mMediaList.addAll(mediaEntityList);
+                    if (mConfig.maxPickNum <= 0) {
+                        mConfig.maxPickNum = mediaEntityList.size();
+                    }
+                    setNewData();
+                }));
     }
 
     private void initListener() {
@@ -170,18 +178,7 @@ public class MediaPickActivity extends AppCompatActivity implements
         MediaPreviewActivity.launchMediaPreviewActivity(this, mMediaList, position, REQUEST_CODE_GET_MEDIA_LIST);
     }
 
-    @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE})
-    void startLoad() {
-        LoadMediaUtils.loadMediaFromSDCard(this, mConfig.mediaType, mediaEntityList ->
-                runOnUiThread(() -> {
-                    mMediaList.clear();
-                    mMediaList.addAll(mediaEntityList);
-                    setNewData();
-                }));
-    }
-
     private void setNewData() {
-        Log.i(TAG, mMediaList.toString());
         mMediaAdapter.setNewData(mMediaList);
         mRecyclerView.scrollToPosition(0);
     }
