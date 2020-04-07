@@ -68,7 +68,13 @@ public class MediaPickManager {
     }
 
     public void destroy() {
+        for (OnSelectItemChangeListener listener : sOnSelectItemChangeListenerList) {
+            removeOnSelectItemChangeListener(listener);
+        }
         sOnSelectItemChangeListenerList = null;
+        for (MediaEntity entity : sSelectItemList) {
+            entity.setIndex(0);
+        }
         sSelectItemList = null;
     }
 
