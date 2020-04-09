@@ -25,6 +25,12 @@ public class MainActivity extends AppCompatActivity {
         MediaPicker.preload(this);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MediaPicker.clearCache(this);
+    }
+
     public void onClick(View view) {
         if (view.getId() == R.id.image) {
             MediaPicker.create(this)

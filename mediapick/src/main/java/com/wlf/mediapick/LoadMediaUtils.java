@@ -1,6 +1,7 @@
 package com.wlf.mediapick;
 
 import android.content.Context;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -42,6 +43,10 @@ public class LoadMediaUtils {
      * 本地图片和视频列表
      */
     private static List<MediaEntity> sImageAndVideoList;
+    /**
+     * 对本地图片/视频的监听，用来更新资源
+     */
+    private static MediaObserver sObserver;
 
     /**
      * 预加载图片和视频
@@ -49,6 +54,13 @@ public class LoadMediaUtils {
      * @param context Context 对象
      */
     static void preload(Context context) {
+        if (sObserver == null) {
+            sObserver = new MediaObserver(context.getApplicationContext());
+            context.getApplicationContext().getContentResolver().registerContentObserver(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI, false, sObserver);
+            context.getApplicationContext().getContentResolver().registerContentObserver(
+                    MediaStore.Video.Media.EXTERNAL_CONTENT_URI, false, sObserver);
+        }
         sLoadMediaService.execute(() -> {
             sImageList = loadImage(context);
             sVideoList = loadVideo(context);
@@ -220,6 +232,7 @@ public class LoadMediaUtils {
 
     /**
      * 获取图片和视频
+     *
      * @return 图片和视频列表
      */
     private static List<MediaEntity> getImagesAndVideos() {
@@ -255,5 +268,34 @@ public class LoadMediaUtils {
             }
             return 0;
         });
+    }
+
+    /**
+     * 清除缓存
+     */
+    static void clearCache(Context context) {
+        if (sObserver != null) {
+            context.getApplicationContext().getContentResolver().unregisterContentObserver(sObserver);
+            sObserver = null;
+        }
+        sImageList = null;
+        sVideoList = null;
+        sImageAndVideoList = null;
+    }
+
+    private static class MediaObserver extends ContentObserver {
+
+        private Context context;
+
+        MediaObserver(Context appContext) {
+            super(null);
+            context = appContext;
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            super.onChange(selfChange, uri);
+            preload(context);
+        }
     }
 }

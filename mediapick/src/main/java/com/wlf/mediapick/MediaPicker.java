@@ -41,6 +41,24 @@ public class MediaPicker {
     }
 
     /**
+     * 预加载图片和视频
+     *
+     * @param context Context对象
+     */
+    public static void preload(Context context) {
+        LoadMediaUtils.preload(context);
+    }
+
+    /**
+     * 清除缓存
+     *
+     * @param context Context对象
+     */
+    public static void clearCache(Context context) {
+        LoadMediaUtils.clearCache(context);
+    }
+
+    /**
      * 设置最大选择数量
      *
      * @param maxPickNum 最大选择数
@@ -70,14 +88,5 @@ public class MediaPicker {
     public void forResult(int requestCode) {
         Intent intent = new Intent(mActivity, MediaPickActivity.class);
         mActivity.startActivityForResult(intent, requestCode);
-    }
-
-    /**
-     * 预加载图片和视频
-     *
-     * @param context Context对象
-     */
-    public static void preload(Context context) {
-        LoadMediaUtils.preload(context);
     }
 }
